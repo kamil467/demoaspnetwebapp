@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "vE3fsvvs0ScL1cCrXu3gAyYUZ39r3mGMzXtJw6YiMZg=",
+  "Source": "DemoWebApplication",
+  "BasePath": "_content/DemoWebApplication",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

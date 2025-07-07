@@ -5,6 +5,8 @@
 bin/
 obj/
 out/
+appsettings.json
+appsettings.*.json
 
 # User-specific files
 *.user
@@ -41,7 +43,6 @@ ScaffoldingReadMe.txt
 
 # Rider
 .idea/
-*.json
 # Local test results
 TestResults/
 *.coverage

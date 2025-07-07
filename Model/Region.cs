@@ -19,4 +19,7 @@ public class Region
     
     [Column("city")]
     public string? City { get; set; }
+
+    [Column("status")]
+    public bool? IsActive { get; set; }
 }

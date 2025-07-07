@@ -17,9 +17,6 @@ public class Region
     [Column("code")]
     public string Code { get; set; }
     
-    [Column("city")]
-    public string? City { get; set; }
-
-    [Column("status")]
-    public bool? IsActive { get; set; }
+    [Column("City")]
+    public string? City { get;}
 }

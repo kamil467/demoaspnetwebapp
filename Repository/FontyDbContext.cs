@@ -17,6 +17,10 @@ public class FontyDbContext: DbContext
     {
         modelBuilder.Entity<Region>()
             .HasKey(r => r.Id);
+
+        modelBuilder.Entity<Region>()
+            .Property(r => r.City)
+            .HasColumnName("City");
     }
     
 }

@@ -1,6 +1,16 @@
 
+using System.Reflection;
+using DemoWebApplication.DTO;
+using DemoWebApplication.Filters;
+using DemoWebApplication.Middlewares;
+using DemoWebApplication.Model;
+using DemoWebApplication.Profile;
 using DemoWebApplication.Repository;
+using DemoWebApplication.Service;
+using DemoWebApplication.Utility;
 using Microsoft.EntityFrameworkCore;
+
+var region = new Region();
 
 string textDelegate()
 {
@@ -15,6 +25,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Logging.AddFilter("Microsoft.Hosting.Lifetime",LogLevel.Information);
 builder.Services.AddOpenApi();
+builder.Services.AddTransient<IRegionService,RegionService>();
+
+builder.Services.AddScoped<IServiceLogger, ServiceLogger>();
+
+
+// register automapper service
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<RegionCategoryDTOProfile>();
+});
+
+// register problem details
+builder.Services.AddProblemDetails();
+
+
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<FontyDbContext>(options =>
 {
@@ -33,8 +59,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
+app.UseMiddleware<CustomHeaderMiddleware>();
+
+// app.UseStatusCodePages(); // to return JSON response for status code errors 404 ,  500 browser based errors
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -60,6 +90,35 @@ app.MapGet("/regions", async (FontyDbContext dbContext) =>
  return regions;
 });
 
+// throws exception because of JSON serialization
+app.MapGet("/regions-cat", async (FontyDbContext dbContext) =>
+{
+   
+        var regions = await dbContext.Regions
+            .Include(r => r.Categories)
+            .FirstOrDefaultAsync();
+        // mapping to DTO 
+
+        return Results.Ok(regions);
+    
+
+});
+
+// validating input using endpoint filter
+app.MapGet("/regions-cat-by-code/{code}", async (string code,FontyDbContext dbContext) =>
+{
+
+    var regions = await dbContext.Regions
+        .Include(r => r.Categories)
+        .FirstOrDefaultAsync();
+    // mapping to DTO 
+
+    return Results.Ok(regions);
+
+
+}).AddEndpointFilter(ValidationHelper.ValidateRegionCode);
+
+
 app.MapControllers();
 app.Run();
 
@@ -69,6 +128,9 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 }
 
 public delegate string WeatherForecastDelegate();
+
+
+
 
 
 

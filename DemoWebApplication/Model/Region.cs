@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DemoWebApplication.Model;
@@ -19,4 +20,12 @@ public class Region
     
     [Column("city")]
     public string? City { get; set; }
+    
+    [Column("status")]
+    public bool IsActive { get; set; }
+    
+    [Column("Email")]
+    public  string Email {get; }
+    
+    public ICollection<Categories>  Categories { get; set; }
 }
